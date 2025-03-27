@@ -10,7 +10,7 @@ import SwiftUI
 public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
     
     let root: CoordinatorViews
-    init(_ root: CoordinatorViews) {
+    public init(_ root: CoordinatorViews) {
         self.root = root
     }
     
