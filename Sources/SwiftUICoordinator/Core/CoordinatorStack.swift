@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
+public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
     
     let root: CoordinatorViews
     init(_ root: CoordinatorViews) {
@@ -16,7 +16,7 @@ struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
     
     @State private var coordinator =  Coordinator<CoordinatorViews>()
     
-    var body: some View {
+    public var body: some View {
         NavigationStack(path: $coordinator.path) {
             root
                 .navigationDestination (for: CoordinatorViews.self) { $0 }
