@@ -34,7 +34,7 @@ public struct AlertButton: Identifiable, Equatable {
     }
 }
 
-struct AlertDetails: Equatable {
+public struct AlertDetails: Equatable {
     let title: String
     let message: String
     let buttons: [AlertButton]

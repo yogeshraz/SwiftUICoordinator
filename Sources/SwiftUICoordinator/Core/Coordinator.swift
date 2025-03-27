@@ -17,19 +17,19 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     var alertDetails: AlertDetails = AlertDetails(title: "", message: "", buttons: [],dialogOption: .alert, titleVisibility: .automatic)
     public init() {}
     
-    enum PushType {
+    public enum PushType {
         case link
         case sheet
         case fullScreenCover
     }
     
-    enum PopType {
+    public enum PopType {
         case link(last: Int)
         case sheet
         case fullScreenCover
     }
     
-    func push(page: CoordinatorPage, type: PushType = . link) {
+    public func push(page: CoordinatorPage, type: PushType = . link) {
         switch type {
         case .link:
             path.append (page)
@@ -40,7 +40,7 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         }
     }
     
-    func pop(type: PopType = .link(last: 1)) {
+    public func pop(type: PopType = .link(last: 1)) {
         
         switch type {
         case .link(let last):
@@ -52,7 +52,7 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         }
     }
     
-    func popToRoot() {
+    public func popToRoot() {
         path.removeLast(path.count)
     }
 }
