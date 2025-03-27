@@ -21,7 +21,7 @@ public struct AlertButton: Identifiable, Equatable {
     let action: (() -> Void)?
     let accessibilityIdentifier: String
     
-    init(title: String, role: ButtonRole? = nil, action: ( () -> Void)? = nil, accesibilityIdentifier: String = "") {
+    public init(title: String, role: ButtonRole? = nil, action: ( () -> Void)? = nil, accesibilityIdentifier: String = "") {
         self.title = title
         self.role = role
         self.action = action
@@ -62,7 +62,7 @@ struct AlertView: ViewModifier {
                     }
                 } message: {
                     Text(details.message)
-            }
+                }
         } else {
             content
                 .confirmationDialog(details.title, isPresented: $isShowing, titleVisibility: details.titleVisibility) {
@@ -77,13 +77,13 @@ struct AlertView: ViewModifier {
                     }
                 } message: {
                     Text(details.message)
-            }
+                }
         }
     }
 }
 
 extension Coordinator {
-    func showBasicAlert(title: String, message: String, buttonTitle: String = "Ok") {
+    public func showBasicAlert(title: String, message: String, buttonTitle: String = "Ok") {
         let button = AlertButton(title: buttonTitle, action: {
             print("Pressed:- \(buttonTitle)")
         })
@@ -91,7 +91,7 @@ extension Coordinator {
         isShowingAlert = true
     }
     
-    func showAlertWithAction(title: String, message: String, buttonTitle: String = "Ok", cancelButtonTitle: String = "Cancel", option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, closer: @escaping () -> ()) {
+    public func showAlertWithAction(title: String, message: String, buttonTitle: String = "Ok", cancelButtonTitle: String = "Cancel", option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, closer: @escaping () -> ()) {
         let button1 = AlertButton(title: buttonTitle, action: {
             closer()
         })
@@ -100,7 +100,7 @@ extension Coordinator {
         isShowingAlert = true
     }
     
-    func showAlertWithMultiAction(title: String, message: String, buttonTitle: String = "Ok", cancelButtonTitle: String = "Cancel", option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, closer: @escaping () -> (), closerCancel: @escaping () -> ()) {
+    public func showAlertWithMultiAction(title: String, message: String, buttonTitle: String = "Ok", cancelButtonTitle: String = "Cancel", option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, closer: @escaping () -> (), closerCancel: @escaping () -> ()) {
         let button1 = AlertButton(title: buttonTitle, action: {
             closer()
         })
@@ -111,7 +111,7 @@ extension Coordinator {
         isShowingAlert = true
     }
     
-    func showAlertWithMultiAction(title: String, message: String, option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, buttons: [AlertButton]) {
+    public func showAlertWithMultiAction(title: String, message: String, option: DialogOption = .alert, sheetTitleVisitibility: Visibility = .automatic, buttons: [AlertButton]) {
         alertDetails = AlertDetails(title: title, message: message, buttons: buttons, dialogOption: option, titleVisibility: sheetTitleVisitibility)
         isShowingAlert = true
     }
