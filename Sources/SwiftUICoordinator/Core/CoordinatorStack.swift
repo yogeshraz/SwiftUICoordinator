@@ -14,14 +14,18 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
         self.root = root
     }
     
-    @State private var coordinator =  Coordinator<CoordinatorViews>()
+    @State private var coordinator = Coordinator<CoordinatorViews>()
+    @State private var hasPopped = false // Prevents multiple pops
     
     public var body: some View {
         NavigationStack(path: $coordinator.path) {
             root
                 .navigationDestination (for: CoordinatorViews.self) { view in
                     view.onDisappear() {
-                        detectBackNavigation()
+                        if !hasPopped {
+                            detectBackNavigation()
+                            hasPopped = true
+                        }
                     }
                 }
                 .sheet(item: $coordinator.sheet) { $0 }
@@ -31,8 +35,13 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
         .environment(coordinator)
         .onChange(of: coordinator.path) { oldStack, newStack in
             if newStack.count < oldStack.count {
-                //coordinator.pop()
-                print("Back button tapped or swiped back")
+                if !hasPopped {
+                    print("Back button tapped or swiped back")
+                    coordinator.pop()
+                    hasPopped = true
+                }
+            } else {
+                hasPopped = false // Reset flag when navigating forward
             }
         }
     }
