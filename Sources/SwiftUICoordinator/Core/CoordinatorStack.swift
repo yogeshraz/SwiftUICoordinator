@@ -23,7 +23,7 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
                 .navigationDestination (for: CoordinatorViews.self) { view in
                     view.onDisappear() {
                         if !hasPopped {
-                            detectBackNavigation()
+                            //detectBackNavigation()
                             hasPopped = true
                         }
                     }
