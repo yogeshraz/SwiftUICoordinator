@@ -31,7 +31,7 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
         .environment(coordinator)
         .onChange(of: coordinator.path) { oldStack, newStack in
             if newStack.count < oldStack.count {
-                coordinator.pop()
+                //coordinator.pop()
                 print("Back button tapped or swiped back")
             }
         }
