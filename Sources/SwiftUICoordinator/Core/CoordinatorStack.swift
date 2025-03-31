@@ -33,17 +33,6 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
                 .showAlert(isShowing: $coordinator.isShowingAlert, details: coordinator.alertDetails)
         }
         .environment(coordinator)
-        .onChange(of: coordinator.path) { oldStack, newStack in
-            if newStack.count < oldStack.count {
-                if !hasPopped {
-                    print("Back button tapped or swiped back")
-                    coordinator.pop()
-                    hasPopped = true
-                }
-            } else {
-                hasPopped = false // Reset flag when navigating forward
-            }
-        }
     }
     
     private func detectBackNavigation() {
