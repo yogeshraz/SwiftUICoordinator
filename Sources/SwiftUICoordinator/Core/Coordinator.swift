@@ -32,7 +32,7 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     public func push(page: CoordinatorPage, type: PushType = . link) {
         switch type {
         case .link:
-            path.append (page)
+            path.append(page)
         case .sheet:
             sheet = page
         case .fullScreenCover:
