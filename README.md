@@ -31,6 +31,5 @@ https://github.com/yogeshraz/SwiftUICoordinator.git
 </p>
 <br>
 
-SwiftUICoordinator is a native, declarative framework designed to facilitate seamless programmatic navigation within SwiftUI applications.
-
-Sample project: https://github.com/yogeshraz/CoordinatorStack
+## Sample project:
+ https://github.com/yogeshraz/CoordinatorStack
