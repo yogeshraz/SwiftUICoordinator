@@ -19,12 +19,7 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
     public var body: some View {
         NavigationStack(path: $coordinator.path) {
             root
-                .navigationDestination (for: CoordinatorViews.self) { view in
-                    view
-                        .onDisappear {
-                            handleBackNavigation()
-                        }
-                }
+                .navigationDestination (for: CoordinatorViews.self) { $0 }
                 .sheet(item: $coordinator.sheet) { $0 }
                 .fullScreenCover(item: $coordinator.fullScreenCover) { $0 }
                 .showAlert(isShowing: $coordinator.isShowingAlert, details: coordinator.alertDetails)
@@ -34,14 +29,6 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
         .onChange(of: coordinator.path) { _, newPath in
             handleSwipeBackNavigation(oldPathCount: coordinator.path.count, newPathCount: newPath.count)
         }
-    }
-    
-    /// Handles navigation when user taps back button or swipes back
-    private func handleBackNavigation() {
-        if coordinator.path.isEmpty {
-            return
-        }
-        coordinator.pop(type: .link(last: 1))
     }
 
     /// Detects swipe back action in NavigationStack
