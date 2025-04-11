@@ -55,4 +55,9 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     public func popToRoot() {
         path.removeLast(path.count)
     }
+    
+    public func replace(with page: CoordinatorPage) {
+        popToRoot()
+        push(page: page)
+    }
 }
