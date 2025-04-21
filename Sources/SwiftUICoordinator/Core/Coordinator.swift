@@ -56,8 +56,8 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         path.removeLast(path.count)
     }
     
-    public func replace(with page: CoordinatorPage) {
-        popToRoot()
-        push(page: page)
+    public func setRoot(page: CoordinatorPage) {
+        path = NavigationPath() // Clear current path
+        path.append(page)       // Set new root
     }
 }
