@@ -60,4 +60,12 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         path = NavigationPath() // Clear current path
         path.append(page)       // Set new root
     }
+    
+    public func reset() {
+        path = NavigationPath()
+        sheet = nil
+        fullScreenCover = nil
+        isShowingAlert = false
+        alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
+    }
 }
