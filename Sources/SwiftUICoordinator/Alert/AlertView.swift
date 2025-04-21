@@ -83,9 +83,9 @@ struct AlertView: ViewModifier {
 }
 
 extension Coordinator {
-    public func showBasicAlert(title: String, message: String, buttonTitle: String = "Ok", closer: @escaping () -> () = nil) {
+    public func showBasicAlert(title: String, message: String, buttonTitle: String = "Ok", closer: (() -> Void)? = nil) {
         let button = AlertButton(title: buttonTitle, action: {
-            if let closer = closer as? () -> Void {
+            if let closer = closer {
                 closer()
             }
             print("Pressed:- \(buttonTitle)")
