@@ -10,19 +10,17 @@ import SwiftUI
 @Observable
 public class Coordinator<Page: Coordinatable & Identifiable & Hashable> {
     
-    // MARK: - Navigation State
     public var path = NavigationPath()
+    private var stack: [Page] = []
+    
     public var sheet: Page?
     public var fullScreenCover: Page?
     
-    // MARK: - Alert State
     public var isShowingAlert = false
     public var alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
     
-    // MARK: - Init
     public init() {}
     
-    // MARK: - Enums
     public enum PushType {
         case link
         case sheet
@@ -35,11 +33,11 @@ public class Coordinator<Page: Coordinatable & Identifiable & Hashable> {
         case fullScreenCover
     }
     
-    // MARK: - Navigation Methods
     public func push(_ page: Page, type: PushType = .link) {
         switch type {
         case .link:
             path.append(page)
+            stack.append(page)
         case .sheet:
             sheet = page
         case .fullScreenCover:
@@ -51,10 +49,12 @@ public class Coordinator<Page: Coordinatable & Identifiable & Hashable> {
         switch type {
         case .link(let last):
             guard last > 0 else { return }
-            if path.count >= last {
-                path.removeLast(last)
+            if stack.count >= last {
+                stack.removeLast(last)
+                path = NavigationPath(stack)
             } else {
-                path.removeLast(path.count)
+                stack.removeAll()
+                path = NavigationPath()
             }
         case .sheet:
             sheet = nil
@@ -64,31 +64,32 @@ public class Coordinator<Page: Coordinatable & Identifiable & Hashable> {
     }
     
     public func popToRoot() {
+        stack.removeAll()
         path = NavigationPath()
     }
     
     public func setRoot(_ page: Page) {
-        path = NavigationPath()
-        path.append(page)
+        stack = [page]
+        path = NavigationPath(stack)
+    }
+    
+    public func popTo(_ page: Page) {
+        guard let index = stack.firstIndex(of: page) else { return }
+        let remaining = stack.prefix(upTo: index + 1)
+        stack = Array(remaining)
+        path = NavigationPath(stack)
     }
     
     public func replaceLast(with page: Page) {
-        guard !path.isEmpty else {
+        guard !stack.isEmpty else {
             push(page)
             return
         }
-        path.removeLast()
-        path.append(page)
+        stack.removeLast()
+        stack.append(page)
+        path = NavigationPath(stack)
     }
     
-    public func popTo<PageType: Hashable>(_ page: PageType) {
-        while let last = path.elements.last as? PageType, last != page {
-            path.removeLast()
-            if path.isEmpty { break }
-        }
-    }
-    
-    // MARK: - Alert Methods
     public func showAlert(details: AlertDetails) {
         alertDetails = details
         isShowingAlert = true
