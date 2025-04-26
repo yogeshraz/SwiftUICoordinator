@@ -19,7 +19,7 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     private var root: CoordinatorPage? // 👈 New: track current root
     
     public init() {}
-
+    
     public enum PushType {
         case link
         case sheet
@@ -81,5 +81,13 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         isShowingAlert = false
         alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
         root = nil
+    }
+    
+    public func resetCoordinator() {
+        self.path = NavigationPath() // Reset path
+        self.sheet = nil             // Reset sheet
+        self.fullScreenCover = nil   // Reset full-screen cover
+        self.isShowingAlert = false  // Reset alert state
+        self.alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic) // Reset alert details
     }
 }
