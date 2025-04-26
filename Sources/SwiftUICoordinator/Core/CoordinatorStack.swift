@@ -8,19 +8,18 @@
 import SwiftUI
 
 public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
-
+    
     let root: CoordinatorViews
-    @State private var coordinator: Coordinator<CoordinatorViews>
-
-    public init(_ root: CoordinatorViews, coordinator: Coordinator<CoordinatorViews>? = nil) {
+    public init(_ root: CoordinatorViews) {
         self.root = root
-        _coordinator = State(initialValue: coordinator ?? Coordinator<CoordinatorViews>())
     }
-
+    
+    @State private var coordinator = Coordinator<CoordinatorViews>()
+    
     public var body: some View {
         NavigationStack(path: $coordinator.path) {
             root
-                .navigationDestination(for: CoordinatorViews.self) { $0 }
+                .navigationDestination (for: CoordinatorViews.self) { $0 }
                 .sheet(item: $coordinator.sheet) { $0 }
                 .fullScreenCover(item: $coordinator.fullScreenCover) { $0 }
                 .showAlert(isShowing: $coordinator.isShowingAlert, details: coordinator.alertDetails)
@@ -32,6 +31,7 @@ public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
         }
     }
 
+    /// Detects swipe back action in NavigationStack
     private func handleSwipeBackNavigation(oldPathCount: Int, newPathCount: Int) {
         if newPathCount < oldPathCount {
             coordinator.pop(type: .link(last: oldPathCount - newPathCount))

@@ -7,17 +7,16 @@
 
 import SwiftUI
 
+import SwiftUI
+
 @Observable
 public class Coordinator<CoordinatorPage: Coordinatable> {
-    var path: NavigationPath = NavigationPath()
+    var path:NavigationPath = NavigationPath()
     var sheet: CoordinatorPage?
     var fullScreenCover: CoordinatorPage?
     
     var isShowingAlert: Bool = false
-    var alertDetails: AlertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
-    
-    private var root: CoordinatorPage? // 👈 New: track current root
-    
+    var alertDetails: AlertDetails = AlertDetails(title: "", message: "", buttons: [],dialogOption: .alert, titleVisibility: .automatic)
     public init() {}
     
     public enum PushType {
@@ -32,7 +31,7 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         case fullScreenCover
     }
     
-    public func push(page: CoordinatorPage, type: PushType = .link) {
+    public func push(page: CoordinatorPage, type: PushType = . link) {
         switch type {
         case .link:
             path.append(page)
@@ -44,50 +43,23 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     }
     
     public func pop(type: PopType = .link(last: 1)) {
+        
         switch type {
         case .link(let last):
             path.removeLast(last)
         case .sheet:
             sheet = nil
         case .fullScreenCover:
-            fullScreenCover = nil
+            fullScreenCover = nil;
         }
     }
     
     public func popToRoot() {
-        path = NavigationPath()
-        if let root = root {
-            path.append(root)
-        }
+        path.removeLast(path.count)
     }
     
     public func setRoot(page: CoordinatorPage) {
-        // Important: first clear everything
-        path = NavigationPath()
-        root = page
-        path.append(page)
-        
-        // Also clear sheets/fullscreens when setting root
-        sheet = nil
-        fullScreenCover = nil
-        isShowingAlert = false
-        alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
-    }
-    
-    public func reset() {
-        path = NavigationPath()
-        sheet = nil
-        fullScreenCover = nil
-        isShowingAlert = false
-        alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
-        root = nil
-    }
-    
-    public func resetCoordinator() {
-        self.path = NavigationPath() // Reset path
-        self.sheet = nil             // Reset sheet
-        self.fullScreenCover = nil   // Reset full-screen cover
-        self.isShowingAlert = false  // Reset alert state
-        self.alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic) // Reset alert details
+        path = NavigationPath() // Clear current path
+        path.append(page)       // Set new root
     }
 }
