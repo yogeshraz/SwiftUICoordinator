@@ -7,34 +7,40 @@
 
 import SwiftUI
 
-public struct CoordinatorStack<CoordinatorViews: Coordinatable>: View {
+public struct CoordinatorStack<Page: Coordinatable & Identifiable & Hashable>: View {
     
-    let root: CoordinatorViews
-    public init(_ root: CoordinatorViews) {
+    @State private var coordinator = Coordinator<Page>()
+    private let root: Page
+    
+    public init(_ root: Page) {
         self.root = root
     }
-    
-    @State private var coordinator = Coordinator<CoordinatorViews>()
     
     public var body: some View {
         NavigationStack(path: $coordinator.path) {
             root
-                .navigationDestination (for: CoordinatorViews.self) { $0 }
-                .sheet(item: $coordinator.sheet) { $0 }
-                .fullScreenCover(item: $coordinator.fullScreenCover) { $0 }
+                .navigationDestination(for: Page.self) { page in
+                    page
+                }
+                .sheet(item: $coordinator.sheet) { page in
+                    page
+                }
+                .fullScreenCover(item: $coordinator.fullScreenCover) { page in
+                    page
+                }
                 .showAlert(isShowing: $coordinator.isShowingAlert, details: coordinator.alertDetails)
         }
         .environment(coordinator)
         .interactiveDismissDisabled(false)
-        .onChange(of: coordinator.path) { _, newPath in
-            handleSwipeBackNavigation(oldPathCount: coordinator.path.count, newPathCount: newPath.count)
+        .onChange(of: coordinator.path) { oldPath, newPath in
+            handleSwipeBackNavigation(oldCount: oldPath.count, newCount: newPath.count)
         }
     }
-
-    /// Detects swipe back action in NavigationStack
-    private func handleSwipeBackNavigation(oldPathCount: Int, newPathCount: Int) {
-        if newPathCount < oldPathCount {
-            coordinator.pop(type: .link(last: oldPathCount - newPathCount))
+    
+    // MARK: - Private
+    private func handleSwipeBackNavigation(oldCount: Int, newCount: Int) {
+        if newCount < oldCount {
+            coordinator.pop(.link(last: oldCount - newCount))
         }
     }
 }

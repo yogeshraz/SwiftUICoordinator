@@ -8,15 +8,21 @@
 import SwiftUI
 
 @Observable
-public class Coordinator<CoordinatorPage: Coordinatable> {
-    var path:NavigationPath = NavigationPath()
-    var sheet: CoordinatorPage?
-    var fullScreenCover: CoordinatorPage?
+public class Coordinator<Page: Coordinatable & Identifiable & Hashable> {
     
-    var isShowingAlert: Bool = false
-    var alertDetails: AlertDetails = AlertDetails(title: "", message: "", buttons: [],dialogOption: .alert, titleVisibility: .automatic)
+    // MARK: - Navigation State
+    public var path = NavigationPath()
+    public var sheet: Page?
+    public var fullScreenCover: Page?
+    
+    // MARK: - Alert State
+    public var isShowingAlert = false
+    public var alertDetails = AlertDetails(title: "", message: "", buttons: [], dialogOption: .alert, titleVisibility: .automatic)
+    
+    // MARK: - Init
     public init() {}
     
+    // MARK: - Enums
     public enum PushType {
         case link
         case sheet
@@ -24,12 +30,13 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
     }
     
     public enum PopType {
-        case link(last: Int)
+        case link(last: Int = 1)
         case sheet
         case fullScreenCover
     }
     
-    public func push(page: CoordinatorPage, type: PushType = . link) {
+    // MARK: - Navigation Methods
+    public func push(_ page: Page, type: PushType = .link) {
         switch type {
         case .link:
             path.append(page)
@@ -40,24 +47,54 @@ public class Coordinator<CoordinatorPage: Coordinatable> {
         }
     }
     
-    public func pop(type: PopType = .link(last: 1)) {
-        
+    public func pop(_ type: PopType = .link()) {
         switch type {
         case .link(let last):
-            path.removeLast(last)
+            guard last > 0 else { return }
+            if path.count >= last {
+                path.removeLast(last)
+            } else {
+                path.removeLast(path.count)
+            }
         case .sheet:
             sheet = nil
         case .fullScreenCover:
-            fullScreenCover = nil;
+            fullScreenCover = nil
         }
     }
     
     public func popToRoot() {
-        path.removeLast(path.count)
+        path = NavigationPath()
     }
     
-    public func setRoot(page: CoordinatorPage) {
-        path = NavigationPath() // Clear current path
-        path.append(page)       // Set new root
+    public func setRoot(_ page: Page) {
+        path = NavigationPath()
+        path.append(page)
+    }
+    
+    public func replaceLast(with page: Page) {
+        guard !path.isEmpty else {
+            push(page)
+            return
+        }
+        path.removeLast()
+        path.append(page)
+    }
+    
+    public func popTo<PageType: Hashable>(_ page: PageType) {
+        while let last = path.elements.last as? PageType, last != page {
+            path.removeLast()
+            if path.isEmpty { break }
+        }
+    }
+    
+    // MARK: - Alert Methods
+    public func showAlert(details: AlertDetails) {
+        alertDetails = details
+        isShowingAlert = true
+    }
+    
+    public func dismissAlert() {
+        isShowingAlert = false
     }
 }
