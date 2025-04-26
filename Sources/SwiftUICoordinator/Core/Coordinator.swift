@@ -7,8 +7,6 @@
 
 import SwiftUI
 
-import SwiftUI
-
 @Observable
 public class Coordinator<CoordinatorPage: Coordinatable> {
     var path:NavigationPath = NavigationPath()
